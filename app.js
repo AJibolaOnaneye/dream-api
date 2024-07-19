@@ -48,7 +48,22 @@ const PORT = process.env.PORT || 8800;
 app.use(helmet());
 
 // CORS configuration
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://dream-hosuing-estate.netlify.app'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+// app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
 // Middleware to parse JSON and cookies
 app.use(express.json());
